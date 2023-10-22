@@ -61,8 +61,13 @@ def on_ui_tabs():
                                     key_min_gap = gr.Slider(minimum=0, maximum=500, step=1, label='Minimum keyframe gap', value=10)
                                     key_max_gap = gr.Slider(minimum=0, maximum=1000, step=1, label='Maximum keyframe gap', value=300)
                                     key_th = gr.Slider(minimum=0.0, maximum=100.0, step=0.1, label='Threshold of delta frame edge', value=8.5)
+                                    custom_frames = gr.Slider(minimum=0, maximum=100, step=1, label='Custom frames [In development]', value=0)
                                     key_add_last_frame = gr.Checkbox(label="Add last frame to keyframes", value=True)
                                 
+                                with gr.TabItem(label="Stage 3 [In development]", elem_id='ebs_configuration_tab3'):
+                                    grid_width = gr.Slider(minimum=2, maximum=3, step=1, label='Width', value=2)
+                                    grid_height = gr.Slider(minimum=2, maximum=3, step=1, label='Height', value=2)
+
                                 with gr.TabItem(label="Stage 5", elem_id='ebs_configuration_tab5'):
                                      key_weight = gr.Textbox(label='Key Weight', lines=1,value=1.0)
                                      video_weight = gr.Textbox(label='Video Weight', lines=1,value=4.0)
@@ -89,20 +94,20 @@ def on_ui_tabs():
                                     mask_mode = gr.Dropdown(choices=["Normal","Invert","None"], value="Normal" ,label="Mask Mode")
                         with gr.TabItem('Info', elem_id='ebs_info'):
                             gr.HTML(value="<p style='margin-bottom: 0.7em'>\
-                                                The process of creating a video can be divided into the following stages.<br>\
-                                                (Stage 3 and 4 only show a guide and do nothing actual processing.)<br><br>\
+                                                The process of creating a video can be divided into the following stages<br>\
+                                                (Stage 3 and 4 only show a guide and do nothing actual processing)<br><br>\
                                                 <b>Stage 1</b> <br>\
                                                     Extract frames from the original video. <br>\
                                                     Generate a mask image. <br><br>\
                                                 <b>Stage 2</b> <br>\
                                                     Select keyframes to be given to ebsynth.<br><br>\
-                                                <b>Stage 3</b> <br>\
-                                                    img2img keyframes.<br><br>\
-                                                <b>Stage 4</b> <br>\
+                                                <b>Stage 3 [In development]</b> <br>\
+                                                    Create GRID 2x2 or 3x3<br><br>\
+                                                <b>Stage 4 [In development]</b> <br>\
                                                     and upscale to the size of the original video.<br><br>\
                                                 <b>Stage 5</b> <br>\
                                                     Rename keyframes.<br>\
-                                                    Generate .ebs file.(ebsynth project file)<br><br>\
+                                                    Generate .ebs file (ebsynth project file)<br><br>\
                                                     \
                                                     Running Ebsynth (on your self)<br>\
                                                     Open the generated .ebs under project directory and press [Run All] button. <br>\
@@ -116,13 +121,13 @@ def on_ui_tabs():
                                                     You can put any image or images or video you like in the background.<br>\
                                                     You can specify in this field -> [Ebsynth Utility]->[configuration]->[stage 8]->[Background source]<br>\
                                                     If you have already created a background video in Invert Mask Mode([Ebsynth Utility]->[configuration]->[etc]->[Mask Mode]),<br>\
-                                                    You can specify \"path_to_project_dir/inv/crossfade_tmp\".<br>\
+                                                    You can specify \"path_to_project_dir/inv/crossfade_tmp\"<br>\
                                                 </p>")
 
                     with gr.Column(variant='panel'):
                         with gr.Column(scale=1):
                             with gr.Row():
-                                stage_index = gr.Radio(label='Process Stage', choices=["Stage 1","Stage 2","Stage 3","Stage 4","Stage 5","Stage 6","Stage 7"], value="Stage 1", type="index", elem_id='ebs_stages')
+                                stage_index = gr.Radio(label='Process Stage', choices=["Stage 1","Stage 2","In development","In development","Stage 5","Stage 6","Stage 7"], value="Stage 1", type="index", elem_id='ebs_stages')
                             
                             with gr.Row():
                                 generate_btn = gr.Button('Generate', elem_id="ebs_generate_btn", variant='primary')
