@@ -15,13 +15,13 @@ Fork was created to facilitate the creation of videos via img2img based on the o
 #### If you want to help, feel free to create the [PR](https://github.com/alexbofa/ebsynth_utility_lite/pulls)
 
 ## Installation
-- Install [ffmpeg](https://ffmpeg.org/) for your operating system
-  (https://www.geeksforgeeks.org/how-to-install-ffmpeg-on-windows/)
+- Install [ffmpeg](https://ffmpeg.org/) for your operating system.
+  [How-to-install-ffmpeg-on-windows](https://www.geeksforgeeks.org/how-to-install-ffmpeg-on-windows/)
 - Install [Ebsynth](https://ebsynth.com/)
-- Use the Extensions tab of the webui to [Install from URL]
+- Use the **Extensions** tab of the webui to **Install from URL**
 
 ## Usage
-- Go to [Ebsynth Utility] tab.
+- Go to [Ebsynth Utility Lite] tab.
 - Create an empty directory somewhere, and fill in the «Project directory» field.
 - Place the video you want to edit from somewhere, and fill in the "Original Movie Path" field.
   Use short videos of a few seconds at first.
@@ -63,12 +63,11 @@ This process should only need to be done once.
 #### Stage 5
 There is nothing to configure.  
 .ebs file will be generated.  
+
+Run the .ebs file.  
+I wouldn't change the settings, but you could adjust the .ebs settings.
   
 #### Stage 6
-Run the .ebs file.  
-I wouldn't change the settings, but you could adjust the .ebs settings.  
-
-#### Stage 7
 Finally, output the video.  
 In my case, the entire process from 1 to 7 took about 30 minutes.  
   
