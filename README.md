@@ -3,7 +3,7 @@ Fork was created to facilitate the creation of videos via img2img based on the o
 <br>
 ## TODO
 - [x] Delete script for img2img
-- [ ] Add configuration → stage 5
+- [x] Add configuration → stage 5
 - [ ] Stage 0 — changing the video size, for example from 1080x1920 to 512x904
 - [ ] Stage 2 — manually add **custom_gap**
 - [ ] Change Stage 3 for create a grid (min 1x1 max 3x3)

@@ -29,7 +29,7 @@ class debug_string:
     def to_string(self):
         return self.txt
 
-def ebsynth_utility_process(stage_index: int, project_dir:str, original_movie_path:str, frame_width:int, frame_height:int, st1_masking_method_index:int, st1_mask_threshold:float, tb_use_fast_mode:bool, tb_use_jit:bool, clipseg_mask_prompt:str, clipseg_exclude_prompt:str, clipseg_mask_threshold:int, clipseg_mask_blur_size:int, clipseg_mask_blur_size2:int, key_min_gap:int, key_max_gap:int, key_th:float, key_add_last_frame:bool, blend_rate:float, export_type:str, bg_src:str, bg_type:str, mask_blur_size:int, mask_threshold:float, fg_transparency:float, mask_mode:str):
+def ebsynth_utility_process(stage_index: int, project_dir:str, original_movie_path:str, frame_width:int, frame_height:int, st1_masking_method_index:int, st1_mask_threshold:float, tb_use_fast_mode:bool, tb_use_jit:bool, clipseg_mask_prompt:str, clipseg_exclude_prompt:str, clipseg_mask_threshold:int, clipseg_mask_blur_size:int, clipseg_mask_blur_size2:int, key_min_gap:int, key_max_gap:int, key_th:float, key_add_last_frame:bool, blend_rate:float, export_type:str, bg_src:str, bg_type:str, mask_blur_size:int, mask_threshold:float, fg_transparency:float, mask_mode:str, key_weight:float, video_weight:float, mask_weight:float, adv_mapping:float, adv_de_flicker:float, adv_diversity:float, adv_detail:bool, adv_gpu:bool):
     args = locals()
     info = ""
     info = dump_dict(info, args)
@@ -72,7 +72,7 @@ def ebsynth_utility_process(stage_index: int, project_dir:str, original_movie_pa
     
 
     project_args = [project_dir, original_movie_path, frame_path, frame_mask_path, org_key_path, img2img_key_path, img2img_upscale_key_path]
-
+    ebs_config={"key_weight":key_weight,"video_weight":video_weight,"mask_weight":mask_weight,"adv_mapping":adv_mapping,"adv_de_flicker":adv_de_flicker,"adv_diversity":adv_diversity,"adv_detail":adv_detail,"adv_gpu":adv_gpu}
 
     if stage_index == 0:
         ebsynth_utility_stage1(dbg, project_args, frame_width, frame_height, st1_masking_method_index, st1_mask_threshold, tb_use_fast_mode, tb_use_jit, clipseg_mask_prompt, clipseg_exclude_prompt, clipseg_mask_threshold, clipseg_mask_blur_size, clipseg_mask_blur_size2, is_invert_mask)
@@ -108,7 +108,7 @@ def ebsynth_utility_process(stage_index: int, project_dir:str, original_movie_pa
         dbg.print("If you know how to do it and want to help, create the PR")
         return process_end( dbg, "" )
     
-    elif stage_index == 4:
+    elif stage_index == 3:
         sample_image = glob.glob( os.path.join(frame_path , "*.png" ) )[0]
         img_height, img_width, _ = cv2.imread(sample_image).shape
 
@@ -120,6 +120,13 @@ def ebsynth_utility_process(stage_index: int, project_dir:str, original_movie_pa
 
         dbg.print("stage 4")
         dbg.print("")
+        dbg.print("This is an information button, it does not do anything")
+        dbg.print("")
+        dbg.print("This tab will be changed to parse the GRID")
+        dbg.print("")
+        dbg.print("If you know how to do it and want to help, create a PR")
+        dbg.print("")
+
 
         if img_height == img_height_key and img_width == img_width_key:
             dbg.print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
@@ -144,26 +151,11 @@ def ebsynth_utility_process(stage_index: int, project_dir:str, original_movie_pa
         dbg.print("10. Generate")
         dbg.print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         return process_end( dbg, "" )
+    elif stage_index == 4:
+        ebsynth_utility_stage5(dbg, project_args, is_invert_mask, ebs_config)
     elif stage_index == 5:
-        ebsynth_utility_stage5(dbg, project_args, is_invert_mask)
-    elif stage_index == 6:
-
-        if is_invert_mask:
-            project_dir = inv_path
-
-        dbg.print("stage 6")
-        dbg.print("")
-        dbg.print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        dbg.print("Running ebsynth.(on your self)")
-        dbg.print("Open the generated .ebs under %s and press [Run All] button."%(project_dir))
-        dbg.print("If ""out-*"" directory already exists in the %s, delete it manually before executing."%(project_dir))
-        dbg.print("If multiple .ebs files are generated, run them all.")
-        dbg.print("(I recommend associating the .ebs file with EbSynth.exe.)")
-        dbg.print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-        return process_end( dbg, "" )
-    elif stage_index == 7:
         ebsynth_utility_stage7(dbg, project_args, blend_rate, export_type, is_invert_mask)
-    elif stage_index == 8:
+    elif stage_index == 6:
         if mask_mode != "Normal":
             dbg.print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             dbg.print("Please reset [configuration]->[etc]->[Mask Mode] to Normal.")

@@ -7,13 +7,13 @@ from modules.call_queue import wrap_gradio_gpu_call
 
 def on_ui_tabs():
 
-    with gr.Blocks(analytics_enabled=False) as ebs_interface:
-        with gr.Row().style(equal_height=False):
+    with gr.Blocks(analytics_enabled=False) as ebs_interface_lite:
+        with gr.Row(equal_height=False):
             with gr.Column(variant='panel'):
 
                 with gr.Row():
                     with gr.Tabs(elem_id="ebs_settings"):
-                        with gr.TabItem('project setting', elem_id='ebs_project_setting'):
+                        with gr.TabItem('Project Setting', elem_id='ebs_project_setting'):
                             project_dir = gr.Textbox(label='Project directory', lines=1)
                             original_movie_path = gr.Textbox(label='Original Movie Path', lines=1)
 
@@ -22,19 +22,21 @@ def on_ui_tabs():
                                 return video
                             org_video.upload(fn_upload_org_video, org_video, original_movie_path)
                             gr.HTML(value="<p style='margin-bottom: 1.2em'>\
-                                    If you have trouble entering the video path manually, you can also use drag and drop. \
+                                    If you have trouble entering the video path manually, you can also use drag and drop \
                                     </p>")
 
-                        with gr.TabItem('configuration', elem_id='ebs_configuration'):
+                        with gr.TabItem('Configuration', elem_id='ebs_configuration'):
                             with gr.Tabs(elem_id="ebs_configuration_tab"):
-                                with gr.TabItem(label="stage 1",elem_id='ebs_configuration_tab1'):
+                                with gr.TabItem(label="Stage 1",elem_id='ebs_configuration_tab1'):
                                     with gr.Row():
                                         frame_width = gr.Number(value=-1, label="Frame Width", precision=0, interactive=True)
                                         frame_height = gr.Number(value=-1, label="Frame Height", precision=0, interactive=True)
                                     gr.HTML(value="<p style='margin-bottom: 1.2em'>\
                                             -1 means that it is calculated automatically. If both are -1, the size will be the same as the source size. \
                                             </p>")
+                                    # with gr.Accordion(label="mask options",open=False):
 
+                                    # mask_mode =gr.Radio(label='mask mode', choices=["Normal","Invert","None"], value="None")
                                     st1_masking_method_index = gr.Radio(label='Masking Method', choices=["transparent-background","clipseg","transparent-background AND clipseg"], value="transparent-background", type="index")
 
                                     with gr.Accordion(label="transparent-background options"):
@@ -55,19 +57,29 @@ def on_ui_tabs():
                                         clipseg_mask_blur_size = gr.Slider(minimum=0, maximum=150, step=1, label='Mask Blur Kernel Size(MedianBlur)', value=11)
                                         clipseg_mask_blur_size2 = gr.Slider(minimum=0, maximum=150, step=1, label='Mask Blur Kernel Size(GaussianBlur)', value=11)
 
-                                with gr.TabItem(label="stage 2", elem_id='ebs_configuration_tab2'):
+                                with gr.TabItem(label="Stage 2", elem_id='ebs_configuration_tab2'):
                                     key_min_gap = gr.Slider(minimum=0, maximum=500, step=1, label='Minimum keyframe gap', value=10)
                                     key_max_gap = gr.Slider(minimum=0, maximum=1000, step=1, label='Maximum keyframe gap', value=300)
                                     key_th = gr.Slider(minimum=0.0, maximum=100.0, step=0.1, label='Threshold of delta frame edge', value=8.5)
                                     key_add_last_frame = gr.Checkbox(label="Add last frame to keyframes", value=True)
+                                
+                                with gr.TabItem(label="Stage 5", elem_id='ebs_configuration_tab5'):
+                                     key_weight = gr.Textbox(label='Key Weight', lines=1,value=1.0)
+                                     video_weight = gr.Textbox(label='Video Weight', lines=1,value=4.0)
+                                     mask_weight = gr.Textbox(label='Mask Weight', lines=1,value=1.0)
+                                     adv_mapping = gr.Textbox(label='Mapping', lines=1,value=10.0)
+                                     adv_de_flicker = gr.Textbox(label='De-flicker', lines=1,value=1.0)
+                                     dv_diversity = gr.Textbox(label='Diversity', lines=1,value=3500.0)
+                                     adv_detail = gr.Radio(label='Synthesis Detail', choices=["None","High","Medium","Low","Carbage"], value="High", type="index")
+                                     adv_gpu = gr.Checkbox(label='Use GPU',value=True,lines=3)
 
-                                with gr.TabItem(label="stage 7", elem_id='ebs_configuration_tab7'):
+                                with gr.TabItem(label="Stage 6", elem_id='ebs_configuration_tab6'):
                                     blend_rate = gr.Slider(minimum=0.0, maximum=1.0, step=0.01, label='Crossfade blend rate', value=1.0)
-                                    export_type = gr.Dropdown(choices=["mp4","webm","gif","rawvideo"], value="mp4" ,label="Export type")
+                                    export_type = gr.Dropdown(choices=["mp4","webm","gif","rawvideo"], value="mp4", label="Export type")
 
-                                with gr.TabItem(label="stage 8", elem_id='ebs_configuration_tab8'):
+                                with gr.TabItem(label="Stage 7", elem_id='ebs_configuration_tab7'):
                                     bg_src = gr.Textbox(label='Background source(mp4 or directory containing images)', lines=1)
-                                    bg_type = gr.Dropdown(choices=["Fit video length","Loop"], value="Fit video length" ,label="Background type")
+                                    bg_type = gr.Dropdown(choices=["Fit video length","Loop"], value="Fit video length", label="Background type")
                                     mask_blur_size = gr.Slider(minimum=0, maximum=150, step=1, label='Mask Blur Kernel Size', value=5)
                                     mask_threshold = gr.Slider(minimum=0.0, maximum=1.0, step=0.01, label='Mask Threshold', value=0.0)
                                     #is_transparent = gr.Checkbox(label="Is Transparent", value=True, visible = False)
@@ -75,31 +87,31 @@ def on_ui_tabs():
 
                                 with gr.TabItem(label="etc", elem_id='ebs_configuration_tab_etc'):
                                     mask_mode = gr.Dropdown(choices=["Normal","Invert","None"], value="Normal" ,label="Mask Mode")
-                        with gr.TabItem('info', elem_id='ebs_info'):
+                        with gr.TabItem('Info', elem_id='ebs_info'):
                             gr.HTML(value="<p style='margin-bottom: 0.7em'>\
                                                 The process of creating a video can be divided into the following stages.<br>\
-                                                (Stage 3, 4, and 6 only show a guide and do nothing actual processing.)<br><br>\
-                                                <b>stage 1</b> <br>\
+                                                (Stage 3 and 4 only show a guide and do nothing actual processing.)<br><br>\
+                                                <b>Stage 1</b> <br>\
                                                     Extract frames from the original video. <br>\
                                                     Generate a mask image. <br><br>\
-                                                <b>stage 2</b> <br>\
+                                                <b>Stage 2</b> <br>\
                                                     Select keyframes to be given to ebsynth.<br><br>\
-                                                <b>stage 3</b> <br>\
+                                                <b>Stage 3</b> <br>\
                                                     img2img keyframes.<br><br>\
-                                                <b>stage 4</b> <br>\
+                                                <b>Stage 4</b> <br>\
                                                     and upscale to the size of the original video.<br><br>\
-                                                <b>stage 5</b> <br>\
+                                                <b>Stage 5</b> <br>\
                                                     Rename keyframes.<br>\
                                                     Generate .ebs file.(ebsynth project file)<br><br>\
-                                                <b>stage 6</b> <br>\
-                                                    Running ebsynth.(on your self)<br>\
+                                                    \
+                                                    Running Ebsynth (on your self)<br>\
                                                     Open the generated .ebs under project directory and press [Run All] button. <br>\
                                                     If ""out-*"" directory already exists in the Project directory, delete it manually before executing.<br>\
                                                     If multiple .ebs files are generated, run them all.<br><br>\
-                                                <b>stage 7</b> <br>\
+                                                <b>Stage 6</b> <br>\
                                                     Concatenate each frame while crossfading.<br>\
                                                     Composite audio files extracted from the original video onto the concatenated video.<br><br>\
-                                                <b>stage 8</b> <br>\
+                                                <b>Stage 7</b> <br>\
                                                     This is an extra stage.<br>\
                                                     You can put any image or images or video you like in the background.<br>\
                                                     You can specify in this field -> [Ebsynth Utility]->[configuration]->[stage 8]->[Background source]<br>\
@@ -110,7 +122,7 @@ def on_ui_tabs():
                     with gr.Column(variant='panel'):
                         with gr.Column(scale=1):
                             with gr.Row():
-                                stage_index = gr.Radio(label='Process Stage', choices=["stage 1","stage 2","stage 3","stage 4","stage 5","stage 6","stage 7","stage 8"], value="stage 1", type="index", elem_id='ebs_stages')
+                                stage_index = gr.Radio(label='Process Stage', choices=["Stage 1","Stage 2","Stage 3","Stage 4","Stage 5","Stage 6","Stage 7"], value="Stage 1", type="index", elem_id='ebs_stages')
                             
                             with gr.Row():
                                 generate_btn = gr.Button('Generate', elem_id="ebs_generate_btn", variant='primary')
@@ -157,6 +169,15 @@ def on_ui_tabs():
 
                     mask_mode,
 
+                    key_weight,
+                    video_weight ,
+                    mask_weight ,
+                    adv_mapping,
+                    adv_de_flicker,
+                    dv_diversity,
+                    adv_detail,
+                    adv_gpu,
+
                 ],
                 outputs=[
                     debug_info,
@@ -166,6 +187,6 @@ def on_ui_tabs():
             )
             generate_btn.click(**ebs_args)
            
-    return (ebs_interface, "Ebsynth Utility Lite", "ebs_interface"),
+    return (ebs_interface_lite, "Ebsynth Utility Lite", "ebs_interface_lite"),
 
 script_callbacks.on_ui_tabs(on_ui_tabs)

@@ -19,6 +19,8 @@ def create_movie_from_frames( dir, start, end, number_of_digits, fps, output_pat
         elif export_type == "webm":
 #            return " -vcodec vp9 -crf 10 -b:v 0 "
             return " -crf 40 -b:v 0 -threads 4 "
+        elif export_type == "mp4 (better)":
+            return " -crf 22 "
         elif export_type == "gif":
             return " "
         elif export_type == "rawvideo":

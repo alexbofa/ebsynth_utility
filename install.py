@@ -5,7 +5,7 @@ def update_transparent_background():
     from importlib.metadata import version as meta_version
     from packaging import version
     v = meta_version("transparent-background")
-    print("current transparent-background " + v)
+    # print("current transparent-background " + v)
     if version.parse(v) < version.parse('1.2.3'):
         launch.run_pip("install -U transparent-background", "update transparent-background version for Ebsynth Utility Lite")
 

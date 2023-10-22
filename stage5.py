@@ -167,7 +167,7 @@ def rename_keys(key_dir):
             dirname = os.path.dirname(img)
             os.rename(img, os.path.join(dirname, f))
 
-def ebsynth_utility_stage5(dbg, project_args, is_invert_mask):
+def ebsynth_utility_stage5(dbg, project_args, is_invert_mask, ebs_config):
     dbg.print("stage5")
     dbg.print("")
     
@@ -235,14 +235,14 @@ def ebsynth_utility_stage5(dbg, project_args, is_invert_mask):
         "key_dir" : "img2img_upscale_key" if no_upscale == False else "img2img_key",
         "video_dir" : "video_frame" if is_invert_mask == False else "../video_frame",
         "mask_dir" : "video_mask" if is_invert_mask == False else "inv_video_mask",
-        "key_weight" : 1.0,
-        "video_weight" : 4.0,
-        "mask_weight" : 1.0,
-        "adv_mapping" : 10.0,
-        "adv_de-flicker" : 1.0,
-        "adv_diversity" : 3500.0,
-        "adv_detail" : 1,   # high
-        "adv_gpu" : 1,      # use gpu
+        "key_weight" : ebs_config["key_weight"],
+        "video_weight" : ebs_config["video_weight"],
+        "mask_weight" : ebs_config["mask_weight"],
+        "adv_mapping" : ebs_config["adv_mapping"],
+        "adv_de-flicker" : ebs_config["adv_de_flicker"],
+        "adv_diversity" : ebs_config["adv_diversity"],
+        "adv_detail" : ebs_config["adv_detail"],   # high
+        "adv_gpu" : ebs_config["adv_gpu"],      # use gpu
     }
 
     if not frame_mask_path:
